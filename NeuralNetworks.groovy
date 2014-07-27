@@ -5,10 +5,10 @@ def negFactor = { (new Random()).nextInt(10) < 5 ? -1 : 1 }
 def max = 1000
 
 //neural network related settings
-final int inputParamsCount = 7
+final int inputParamsCount = 5
 final int midLayerMaxElementsCount = 3
 final int outputParamsCount = 1
-final int innerLayer = 2
+final int innerLayer = 4
 
 //learning constant
 alpha = 0.3
@@ -115,10 +115,10 @@ for (int i = 0; i < xSize + 1; i++) {
 
 def backpropagation(fSigmoid, inputParamsCount, midLayerMaxElementsCount, outputParamsCount, innerLayer, alpha, xSize, yzSize, w, out, err, x, y) {
 
-    println("Calculating out matrix...")
+    //println("Calculating out matrix...")
     out = outCalculation(fSigmoid, x, out, xSize, inputParamsCount, midLayerMaxElementsCount, outputParamsCount, yzSize, w)
 
-    println("Calculating error matrix...")
+    //println("Calculating error matrix...")
     //initialize first element of error matrix
     (0..y.size() - 1).each {
         err[xSize][it] = y[it] - out[xSize][it]
@@ -151,7 +151,7 @@ def backpropagation(fSigmoid, inputParamsCount, midLayerMaxElementsCount, output
         println()
     }
     */
-    println('adjusting weights')
+    //println('adjusting weights')
     //Adjust weights for each layer
     for (int i = 0; i < xSize; i++) {
         for (int j = 0; j < yzSize; j++) {
@@ -168,18 +168,45 @@ def backpropagation(fSigmoid, inputParamsCount, midLayerMaxElementsCount, output
             }
         }
     }
-    println('done')
+    //println('done')
     return w
 }
 
-//displayMatrix3d(w)
-1000.times {
-    println("iteration number:: $it")
-    w = backpropagation(fSigmoid, inputParamsCount, midLayerMaxElementsCount, outputParamsCount, innerLayer, alpha, xSize, yzSize, w, out, err, x, y)
-    // displayMatrix3d(w)
+xInput = [[0.025, 0.18018018, 0.75, 1, 0.068583134],
+          [0.0315, 0.18018018, 0.75, 1, 0.068583134],
+          [0.04, 0.18018018, 0.75, 1, 0.068583134],
+          [0.05, 0.18018018, 0.75, 1, 0.068583134],
+          [0.0625, 0.18018018, 0.75, 1, 0.068583134],
+          [0.08, 0.18018018, 0.75, 1, 0.068583134],
+          [0.1, 0.18018018, 0.75, 1, 0.068583134],
+          [0.125, 0.18018018, 0.75, 1, 0.068583134],
+          [0.1575, 0.18018018, 0.75, 1, 0.068583134],
+          [0.2, 0.18018018, 0.75, 1, 0.068583134]]
+
+yInput = [[0.640064006],
+          [0.646564006],
+          [0.655064006],
+          [0.665064006],
+          [0.677564006],
+          [0.695064006],
+          [0.715064006],
+          [0.740064006],
+          [0.772564006],
+          [0.815064006]]
+10.times {
+    for (int i = 0; i < xInput.size(); i++) {
+        x = xInput[i]
+        y = yInput[i]
+        //displayMatrix3d(w)
+        100.times {
+            println("iteration number:: $it")
+            w = backpropagation(fSigmoid, inputParamsCount, midLayerMaxElementsCount, outputParamsCount, innerLayer, alpha, xSize, yzSize, w, out, err, x, y)
+            // displayMatrix3d(w)
+        }
+    }
 }
 
 
+x = [0.025, 0.18018018, 0.75, 1, 0.068583134]
 out = outCalculation(fSigmoid, x, out, xSize, inputParamsCount, midLayerMaxElementsCount, outputParamsCount, yzSize, w)
-displayMatrix3d(w)
 displayMatrix2d(out)
