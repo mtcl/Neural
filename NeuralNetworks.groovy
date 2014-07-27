@@ -11,7 +11,7 @@ final int outputParamsCount = 1
 final int innerLayer = 4
 
 //learning constant
-alpha = 0.3
+alpha = 0.4
 
 def xSize = innerLayer + 1
 def yzSize = [inputParamsCount, midLayerMaxElementsCount, outputParamsCount].max()
@@ -172,41 +172,69 @@ def backpropagation(fSigmoid, inputParamsCount, midLayerMaxElementsCount, output
     return w
 }
 
-xInput = [[0.025, 0.18018018, 0.75, 1, 0.068583134],
-          [0.0315, 0.18018018, 0.75, 1, 0.068583134],
-          [0.04, 0.18018018, 0.75, 1, 0.068583134],
-          [0.05, 0.18018018, 0.75, 1, 0.068583134],
-          [0.0625, 0.18018018, 0.75, 1, 0.068583134],
-          [0.08, 0.18018018, 0.75, 1, 0.068583134],
-          [0.1, 0.18018018, 0.75, 1, 0.068583134],
-          [0.125, 0.18018018, 0.75, 1, 0.068583134],
-          [0.1575, 0.18018018, 0.75, 1, 0.068583134],
-          [0.2, 0.18018018, 0.75, 1, 0.068583134]]
+xInput = [[0.4, 0.7, 0.6, 0.9, 0.5],
+          [0.5, 0.5, 0.8, 0.5, 1],
+          [0.7, 0.9, 0.3, 0.2, 0.5],
+          [0.9, 0.5, 1, 0.7, 0.9],
+          [0.5, 0.1, 0.6, 0.3, 0.9],
+          [0.5, 0.6, 0.4, 0.7, 1],
+          [0.2, 0.8, 0.9, 0.8, 1],
+          [0.4, 0.5, 0.2, 0.3, 0.7],
+          [0.6, 0.7, 1, 0.1, 0.3],
+          [0.4, 0.4, 0.5, 0.4, 0.5],
+          [0.2, 0.6, 0.4, 0.2, 0.5],
+          [0.2, 0.7, 0.2, 0.6, 0.8],
+          [0.6, 0.8, 0.3, 0.2, 0.1],
+          [0.8, 0.4, 0.9, 0.7, 0.3],
+          [0.3, 0.2, 1, 0.8, 0.4],
+          [0.3, 0.3, 0.9, 1, 0.9],
+          [0.5, 0.1, 0.3, 0.6, 0.2],
+          [0.3, 0.2, 0.8, 0.4, 0.9],
+          [0.7, 0.4, 0.4, 0.5, 1]]
 
-yInput = [[0.640064006],
-          [0.646564006],
-          [0.655064006],
-          [0.665064006],
-          [0.677564006],
-          [0.695064006],
-          [0.715064006],
-          [0.740064006],
-          [0.772564006],
-          [0.815064006]]
-10.times {
+yInput = [[0.729333333],
+          [0.656],
+          [0.516666667],
+          [0.5517333333],
+          [0.428666667],
+          [0.514666667],
+          [0.754],
+          [0.344666667],
+          [0.65],
+          [0.396666667],
+          [0.366],
+          [0.436666667],
+          [0.478],
+          [0.650666667],
+          [0.728],
+          [0.784666667],
+          [0.412666667],
+          [0.434666667],
+          [0.397333333],
+          [0.516]]
+
+
+1000.times {
+    println("iteration number:: $it")
     for (int i = 0; i < xInput.size(); i++) {
         x = xInput[i]
         y = yInput[i]
+        //println("training the neural network using $x as input and $y as output")
         //displayMatrix3d(w)
-        100.times {
-            println("iteration number:: $it")
+        10.times {
             w = backpropagation(fSigmoid, inputParamsCount, midLayerMaxElementsCount, outputParamsCount, innerLayer, alpha, xSize, yzSize, w, out, err, x, y)
             // displayMatrix3d(w)
         }
     }
+//    x = xInput[5]
+//    out = outCalculation(fSigmoid, x, out, xSize, inputParamsCount, midLayerMaxElementsCount, outputParamsCount, yzSize, w)
+//displayMatrix2d(out)
+
+//    println("predicted output for this input is: " + out[out.size()-1][0])
 }
 
 
-x = [0.025, 0.18018018, 0.75, 1, 0.068583134]
+x = [0.7, 0.9, 0.3, 0.2, 0.5]
 out = outCalculation(fSigmoid, x, out, xSize, inputParamsCount, midLayerMaxElementsCount, outputParamsCount, yzSize, w)
-displayMatrix2d(out)
+//displayMatrix2d(out)
+println("predicted output for this input is: " + out[out.size() - 1][0])
