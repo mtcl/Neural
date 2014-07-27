@@ -32,13 +32,23 @@ def x = [0.05, 0.02]
 def y = [1, 0]
 
 //display neural network weights
-def displayMatrix = { x1 ->
-    for (int i = 0; i < xSize; i++) {
-        for (int j = 0; j < yzSize; j++) {
-            for (int k = 0; k < yzSize; k++) {
+def displayMatrix3d = { x1 ->
+    for (int i = 0; i < x1[0].size; i++) {
+        for (int j = 0; j < x1[1].size; j++) {
+            for (int k = 0; k < x1[2].size; k++) {
                 print x1[i][j][k] + " "
             }
             println()
+        }
+        println()
+    }
+}
+
+//display neural network weights
+def displayMatrix2d = { x1 ->
+    for (int i = 0; i < x1[0].size; i++) {
+        for (int j = 0; j < x1[1].size; j++) {
+            print x1[i][j] + " "
         }
         println()
     }
@@ -58,17 +68,16 @@ for (int i = 0; i < xSize; i++) {
 }
 
 w = [[[0.5, 0.4, 0.1], [0.2, 0.6, 0.2], [0, 0, 0]], [[0.10, 0.55, 0.35], [0.2, 0.45, 0.35], [0.25, 0.15, 0.60]], [[0.3, 0.35, 0], [0.35, 0.25, 0], [0.45, 0.3, 0]]]
-displayMatrix(w)
 
-def backpropagation(fSigmoid, inputParamsCount, midLayerMaxElementsCount, outputParamsCount, innerLayer, alpha, xSize, yzSize, w, out, err, x, y) {
 
-    //Start out matrix calculation
-    //initialize first element of out matrix
+def outCalculation(fSigmoid, x, out, xSize, inputParamsCount, midLayerMaxElementsCount, outputParamsCount, yzSize, w) {
+//Start out matrix calculation
+//initialize first element of out matrix
     (0..x.size() - 1).each {
         out[0][it] = x[it]
     }
 
-    //Initializing remaining elements of out matrix
+//Initializing remaining elements of out matrix
     def sum
     for (int i = 1; i < xSize + 1; i++) {
 
@@ -92,21 +101,29 @@ def backpropagation(fSigmoid, inputParamsCount, midLayerMaxElementsCount, output
             //println()
         }
     }
-    /*
-    for (int i = 0; i < xSize + 1; i++) {
-        for (int j = 0; j < yzSize; j++) {
-            print out[i][j] + " "
-        }
-        println()
+/*
+for (int i = 0; i < xSize + 1; i++) {
+    for (int j = 0; j < yzSize; j++) {
+        print out[i][j] + " "
     }
-    */
-    //end out matrix calculation
+    println()
+}
+*/
+//end out matrix calculation
+    return out
+}
 
+def backpropagation(fSigmoid, inputParamsCount, midLayerMaxElementsCount, outputParamsCount, innerLayer, alpha, xSize, yzSize, w, out, err, x, y) {
+
+    println("Calculating out matrix...")
+    out = outCalculation(fSigmoid, x, out, xSize, inputParamsCount, midLayerMaxElementsCount, outputParamsCount, yzSize, w)
+
+    println("Calculating error matrix...")
     //initialize first element of error matrix
     (0..y.size() - 1).each {
         err[xSize][it] = y[it] - out[xSize][it]
     }
-    println()
+
     //Initializing remaining elements of err matrix
     //looping backwards in the error matrix (since the length of array is xSize+1, we will start with xSize-1
     //the intent is to start with last inner layer in the neural network
@@ -126,13 +143,14 @@ def backpropagation(fSigmoid, inputParamsCount, midLayerMaxElementsCount, output
             err[i][j] = out[i][j] * (1 - out[i][j]) * sum
         }
     }
-
+    /*
     for (int i = 0; i < xSize + 1; i++) {
         for (int j = 0; j < yzSize; j++) {
             print err[i][j] + " "
         }
         println()
     }
+    */
     println('adjusting weights')
     //Adjust weights for each layer
     for (int i = 0; i < xSize; i++) {
@@ -150,9 +168,17 @@ def backpropagation(fSigmoid, inputParamsCount, midLayerMaxElementsCount, output
             }
         }
     }
-    println('adjusted weights')
-    return [w]
+    println('done')
+    return w
+}
+
+displayMatrix3d(w)
+1000.times {
+    println("iteration number:: $it")
+    w = backpropagation(fSigmoid, inputParamsCount, midLayerMaxElementsCount, outputParamsCount, innerLayer, alpha, xSize, yzSize, w, out, err, x, y)
+    displayMatrix3d(w)
 }
 
 
-w = backpropagation(fSigmoid, inputParamsCount, midLayerMaxElementsCount, outputParamsCount, innerLayer, alpha, xSize, yzSize, w, out, err, x, y)
+out = outCalculation(fSigmoid, x, out, xSize, inputParamsCount, midLayerMaxElementsCount, outputParamsCount, yzSize, w)
+println(out)
