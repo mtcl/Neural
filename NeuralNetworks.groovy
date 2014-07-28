@@ -214,14 +214,14 @@ yInput = [[0.729333333],
           [0.516]]
 
 
-1000.times {
+100.times {
     println("iteration number:: $it")
     for (int i = 0; i < xInput.size(); i++) {
         x = xInput[i]
         y = yInput[i]
         //println("training the neural network using $x as input and $y as output")
         //displayMatrix3d(w)
-        10.times {
+        100.times {
             w = backpropagation(fSigmoid, inputParamsCount, midLayerMaxElementsCount, outputParamsCount, innerLayer, alpha, xSize, yzSize, w, out, err, x, y)
             // displayMatrix3d(w)
         }
@@ -233,8 +233,17 @@ yInput = [[0.729333333],
 //    println("predicted output for this input is: " + out[out.size()-1][0])
 }
 
-
-x = [0.7, 0.9, 0.3, 0.2, 0.5]
-out = outCalculation(fSigmoid, x, out, xSize, inputParamsCount, midLayerMaxElementsCount, outputParamsCount, yzSize, w)
+//error value calculation
+def errsum = 0
+for (int i = 0; i < xInput.size(); i++) {
+    x = xInput[i]
+    y = yInput[i]
+    out = outCalculation(fSigmoid, x, out, xSize, inputParamsCount, midLayerMaxElementsCount, outputParamsCount, yzSize, w)
 //displayMatrix2d(out)
-println("predicted output for this input is: " + out[out.size() - 1][0])
+    err = (y[0] - out[out.size() - 1][0])
+    println("value of $i input variable is: $err")
+    errsum += Math.pow(err, 2)
+
+}
+mse = errsum / xInput.size()
+println(Math.pow(mse, 0.5))
